@@ -3,6 +3,8 @@ A curated web archive and interactive companion site exploring the narrative arc
 
 An elegant digital archive and web companion exploring the narrative architecture, character loyalty arcs, and thematic depth of *Pursuit of Jade*. 
 
+https://raedwulfx.github.io/-Pursuit-of-Jade-Digital-Notes/
+
 This project features a fully responsive single-page design utilizing high-end typography, glassmorphism UI components, and smooth interactive states.
 
 ## 🌟 Key Features
