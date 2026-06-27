@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>逐玉 — Pursuit of Jade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ─── THEME TOKENS ───────────────────────────────────── */
+    :root {
+      --transition-speed: 0.35s;
+    }
+
+    /* DARK MODE (default) */
+    [data-theme="dark"] {
+      --bg-base:        #061a10;
+      --bg-mid:         #0a2e1e;
+      --bg-card:        rgba(255,255,255,0.055);
+      --bg-card-hover:  rgba(255,255,255,0.085);
+      --bg-quote:       rgba(78,203,145,0.07);
+      --bg-quote-hover: rgba(78,203,145,0.12);
+      --bg-nav:         rgba(6,26,16,0.85);
+      --bg-loyalty:     rgba(255,255,255,0.04);
+
+      --border-card:    rgba(255,255,255,0.11);
+      --border-hover:   rgba(255,255,255,0.22);
+      --border-quote:   #4ecb91;
+      --border-nav:     rgba(255,255,255,0.06);
+
+      --glow-jade:      rgba(78,203,145,0.13);
+      --glow-jade-card: rgba(78,203,145,0.18);
+      --glow-gold:      rgba(201,168,76,0.09);
+
+      --text-primary:   rgba(255,255,255,0.95);
+      --text-secondary: rgba(255,255,255,0.70);
+      --text-muted:     rgba(255,255,255,0.42);
+
+      --jade:           #4ecb91;
+      --jade-pale:      #a8f0d0;
+      --jade-deep:      #1a6b45;
+      --gold:           #c9a84c;
+      --gold-light:     #e8d08a;
+
+      --tab-active-bg:  rgba(78,203,145,0.12);
+      --tab-active-border: #4ecb91;
+      --tab-active-color: #4ecb91;
+      --tag-learn-bg:   rgba(78,203,145,0.15);
+      --tag-learn-color: #4ecb91;
+      --tag-learn-border: rgba(78,203,145,0.28);
+      --tag-theme-bg:   rgba(201,168,76,0.13);
+      --tag-theme-color: #e8d08a;
+      --tag-theme-border: rgba(201,168,76,0.28);
+      --particle-color: rgba(78,203,145,0.18);
+      --particle-color-alt: rgba(201,168,76,0.15);
+      --shimmer-start:  #4ecb91;
+      --shimmer-end:    #c9a84c;
+      --verdict-color:  #c9a84c;
+    }
+
+    /* LIGHT MODE */
+    [data-theme="light"] {
+      --bg-base:        #f4f0e6;
+      --bg-mid:         #ece6d6;
+      --bg-card:        rgba(255,255,255,0.65);
+      --bg-card-hover:  rgba(255,255,255,0.85);
+      --bg-quote:       rgba(10,74,48,0.06);
+      --bg-quote-hover: rgba(10,74,48,0.10);
+      --bg-nav:         rgba(244,240,230,0.90);
+      --bg-loyalty:     rgba(255,255,255,0.55);
+
+      --border-card:    rgba(10,74,48,0.14);
+      --border-hover:   rgba(10,74,48,0.30);
+      --border-quote:   #0f4a30;
+      --border-nav:     rgba(10,74,48,0.10);
+
+      --glow-jade:      rgba(15,74,48,0.08);
+      --glow-jade-card: rgba(15,74,48,0.13);
+      --glow-gold:      rgba(201,168,76,0.12);
+
+      --text-primary:   #0d2b1a;
+      --text-secondary: #2a5c3c;
+      --text-muted:     #6a9478;
+
+      --jade:           #0f4a30;
+      --jade-pale:      #1a6b45;
+      --jade-deep:      #0a2e1e;
+      --gold:           #8a6018;
+      --gold-light:     #a07520;
+
+      --tab-active-bg:  rgba(15,74,48,0.10);
+      --tab-active-border: #0f4a30;
+      --tab-active-color: #0f4a30;
+      --tag-learn-bg:   rgba(15,74,48,0.10);
+      --tag-learn-color: #0a3320;
+      --tag-learn-border: rgba(15,74,48,0.22);
+      --tag-theme-bg:   rgba(138,96,24,0.10);
+      --tag-theme-color: #6b4510;
+      --tag-theme-border: rgba(138,96,24,0.22);
+      --particle-color: rgba(15,74,48,0.12);
+      --particle-color-alt: rgba(138,96,24,0.10);
+      --shimmer-start:  #0f4a30;
+      --shimmer-end:    #8a6018;
+      --verdict-color:  #8a6018;
+    }
+
+    /* ─── BASE LAYOUT ────────────────────────────────────── */
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+      overflow-x: hidden;
+    }
+
+    /* ─── ANIMATED BACKGROUND ────────────────────────────── */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .bg-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      transition: background var(--transition-speed) ease;
+    }
+    .bg-glow-1 {
+      width: 520px; height: 520px;
+      top: -140px; left: -100px;
+      background: var(--glow-jade);
+      animation: glow-drift-1 14s ease-in-out infinite alternate;
+    }
+    .bg-glow-2 {
+      width: 400px; height: 400px;
+      bottom: -80px; right: -80px;
+      background: var(--glow-gold);
+      animation: glow-drift-2 18s ease-in-out infinite alternate;
+    }
+    .bg-glow-3 {
+      width: 300px; height: 300px;
+      top: 45%; left: 55%;
+      background: var(--glow-jade);
+      opacity: 0.5;
+      animation: glow-drift-3 22s ease-in-out infinite alternate;
+    }
+    @keyframes glow-drift-1 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(40px,30px) scale(1.1); }
+    }
+    @keyframes glow-drift-2 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-30px,-20px) scale(1.08); }
+    }
+    @keyframes glow-drift-3 {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-20px,40px) scale(0.92); }
+    }
+
+    /* ─── FLOATING PARTICLES ─────────────────────────────── */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float-up linear infinite;
+    }
+    @keyframes float-up {
+      0%   { transform: translateY(0) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+    }
+
+    /* ─── NAVBAR ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-nav);
+      border-bottom: 1px solid var(--border-nav);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    }
+    .nav-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-brand {
+      font-family: 'IM Fell English', serif;
+      font-size: 18px;
+      color: var(--jade);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+      transition: color var(--transition-speed) ease;
+    }
+    .nav-brand span {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 12px;
+      letter-spacing: 0.07em;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px; left: 10px; right: 10px;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ─── THEME TOGGLE ───────────────────────────────────── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .theme-toggle-label {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      transition: color var(--transition-speed) ease;
+    }
+    .toggle-track {
+      width: 40px;
+      height: 22px;
+      border-radius: 11px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      position: relative;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    [data-theme="light"] .toggle-track {
+      background: rgba(15,74,48,0.12);
+      border-color: rgba(15,74,48,0.25);
+    }
+    .toggle-thumb {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--jade);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease;
+    }
+    [data-theme="light"] .toggle-thumb { transform: translateX(18px); }
+    .toggle-icon {
+      font-size: 13px;
+      line-height: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    /* ─── HAMBURGER ──────────────────────────────────────── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+    .hamburger:hover { background: var(--bg-card); }
+    .hamburger-line {
+      width: 22px; height: 1.5px;
+      background: var(--text-secondary);
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+    }
+    .hamburger.open .hamburger-line:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
+    }
+    .hamburger.open .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.open .hamburger-line:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      padding: 1rem 1.5rem;
+      background: var(--bg-nav);
+      border-bottom: 1px solid var(--border-nav);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+    }
+    .mobile-nav.open {
+      max-height: 300px;
+      padding: 1rem 1.5rem;
+    }
+    .mobile-nav a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 10px 4px;
+      border-bottom: 1px solid var(--border-nav);
+      transition: color 0.2s ease;
+      letter-spacing: 0.05em;
+    }
+    .mobile-nav a:last-child { border-bottom: none; }
+    .mobile-nav a:hover { color: var(--gold); }
+
+    /* ─── MAIN PAGE ──────────────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* ─── HERO ───────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .hero-eyebrow {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--jade);
+      margin-bottom: 12px;
+      opacity: 0.85;
+      animation: fade-in-down 0.8s ease both;
+    }
+    .hero-title {
+      font-family: 'IM Fell English', serif;
+      font-size: clamp(30px, 5vw, 44px);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.12;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+      animation: fade-in-down 0.9s 0.1s ease both;
+    }
+    .hero-title .accent { color: var(--jade); }
+    .hero-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.18em;
+      margin-bottom: 18px;
+      animation: fade-in-down 1s 0.2s ease both;
+    }
+    .hero-shimmer-wrap {
+      display: flex;
+      justify-content: center;
+      animation: fade-in-down 1s 0.3s ease both;
+    }
+    .hero-line {
+      width: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--shimmer-start), var(--shimmer-end));
+      border-radius: 2px;
+      animation: shimmer-grow 1.2s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+      position: relative;
+      overflow: visible;
+    }
+    .hero-line::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      background-size: 200% 100%;
+      animation: shimmer-shine 3s 1.8s ease-in-out infinite;
+    }
+    @keyframes shimmer-grow {
+      to { width: 80px; }
+    }
+    @keyframes shimmer-shine {
+      0%   { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes fade-in-down {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── TAB BAR ────────────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; right: 50%;
+      height: 1.5px;
+      background: var(--gold);
+      transition: left 0.25s ease, right 0.25s ease;
+    }
+    .tab-btn:hover {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
+    }
+    .tab-btn:hover::after { left: 12%; right: 12%; }
+    .tab-btn.active {
+      border-color: var(--tab-active-border);
+      background: var(--tab-active-bg);
+      color: var(--tab-active-color);
+      font-weight: 500;
+      box-shadow: 0 0 16px var(--glow-jade-card);
+    }
+    .tab-btn.active::after { left: 12%; right: 12%; background: var(--jade); }
+
+    /* ─── SECTION ────────────────────────────────────────── */
+    .section {
+      display: none;
+      animation: section-in 0.4s ease both;
+    }
+    .section.active { display: block; }
+    @keyframes section-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── GLASS CARD ─────────────────────────────────────── */
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+        border-color 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 55%);
+      border-radius: inherit;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .glass-card::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--jade) 0%, transparent 50%);
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 40px var(--glow-jade-card), 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .glass-card:hover::before { opacity: 1.5; }
+
+    /* ─── CARD TYPOGRAPHY ────────────────────────────────── */
+    .card-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--jade);
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 7px;
+      opacity: 0.85;
+    }
+    .card-eyebrow-gold {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 7px;
+      opacity: 0.85;
+    }
+    .card-title {
+      font-family: 'IM Fell English', serif;
+      font-size: 19px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      line-height: 1.3;
+      font-weight: 400;
+    }
+    .card-body {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.78;
+      margin-bottom: 12px;
+    }
+    .card-body:last-child { margin-bottom: 0; }
+
+    /* ─── QUOTE BLOCK ────────────────────────────────────── */
+    .quote-glass {
+      background: var(--bg-quote);
+      border-left: 2px solid var(--border-quote);
+      border-radius: 0 10px 10px 0;
+      padding: 13px 16px;
+      margin: 10px 0;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+    .quote-glass:hover {
+      background: var(--bg-quote-hover);
+      box-shadow: -2px 0 12px var(--glow-jade);
+    }
+    .q-cn {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 14.5px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      line-height: 1.65;
+    }
+    .q-en {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      font-style: italic;
+      line-height: 1.65;
+      margin-bottom: 5px;
+    }
+    .q-attr {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── TAGS ───────────────────────────────────────────── */
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 11px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+      letter-spacing: 0.07em;
+      font-weight: 500;
+    }
+    .tag-learn {
+      background: var(--tag-learn-bg);
+      color: var(--tag-learn-color);
+      border: 1px solid var(--tag-learn-border);
+    }
+    .tag-theme {
+      background: var(--tag-theme-bg);
+      color: var(--tag-theme-color);
+      border: 1px solid var(--tag-theme-border);
+    }
+
+    /* ─── DIVIDER ────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-card), transparent);
+      margin: 1.75rem 0;
+    }
+
+    /* ─── LOYALTY GRID ───────────────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .loyalty-glass {
+      background: var(--bg-loyalty);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .loyalty-glass:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 28px var(--glow-jade);
+    }
+    .loy-family {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .loy-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.68;
+    }
+    .loy-verdict {
+      font-size: 11px;
+      color: var(--verdict-color);
+      margin-top: 9px;
+      font-style: italic;
+      opacity: 0.9;
+    }
+
+    /* ─── EPISODE HEADER ─────────────────────────────────── */
+    .ep-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .ep-num-pill {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 11px;
+      border: 1px solid var(--border-card);
+      border-radius: 100px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .ep-title-text {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem 1.5rem 3rem;
+    }
+    .footer-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--shimmer-start), var(--shimmer-end));
+      margin: 0 auto 14px;
+      border-radius: 2px;
+    }
+    .footer-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .mobile-nav { display: flex; }
+      main { padding: 2rem 1rem 4rem; }
+      .hero-title { font-size: 28px; }
+      .tab-bar { gap: 6px; }
+      .tab-btn { font-size: 11px; padding: 7px 14px; }
+      .glass-card { padding: 1.1rem 1.2rem; }
+      .card-title { font-size: 17px; }
+    }
+    @media (max-width: 400px) {
+      .tab-bar { flex-direction: column; align-items: stretch; }
+      .tab-btn { border-radius: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── ANIMATED BACKGROUND ─────────────────────────────── -->
+  <div class="bg-canvas" id="bg-canvas" aria-hidden="true">
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    <!-- particles injected by JS -->
+  </div>
+
+  <!-- ─── NAVBAR ───────────────────────────────────────────── -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-brand" href="#">逐玉 <span>Pursuit of Jade</span></a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#themes"   onclick="switchTabFromNav('themes')">Themes</a></li>
+        <li><a href="#loyalty"  onclick="switchTabFromNav('loyalty')">Loyalty</a></li>
+        <li><a href="#episodes" onclick="switchTabFromNav('episodes')">Episodes</a></li>
+        <li><a href="#quotes"   onclick="switchTabFromNav('quotes')">Quotes</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <!-- theme toggle -->
+        <div class="theme-toggle" role="switch" aria-checked="false" aria-label="Toggle light/dark mode" tabindex="0" id="theme-toggle" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
+          <span class="toggle-icon" aria-hidden="true">🌙</span>
+          <div class="toggle-track">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-icon" aria-hidden="true">☀️</span>
+        </div>
+
+        <!-- hamburger -->
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" onclick="toggleMobileNav()">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="mobile-nav" id="mobile-nav" role="menu">
+      <a href="#" role="menuitem" onclick="switchTabFromNav('themes');closeMobileNav()">Themes</a>
+      <a href="#" role="menuitem" onclick="switchTabFromNav('loyalty');closeMobileNav()">Loyalty</a>
+      <a href="#" role="menuitem" onclick="switchTabFromNav('episodes');closeMobileNav()">Episodes</a>
+      <a href="#" role="menuitem" onclick="switchTabFromNav('quotes');closeMobileNav()">Quotes</a>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN CONTENT ─────────────────────────────────────── -->
+  <main>
+
+    <!-- HERO -->
+    <header class="hero" role="banner">
+      <div class="hero-eyebrow" aria-hidden="true">逐玉 · 金句与感悟</div>
+      <h1 class="hero-title">Pursuit of <span class="accent">Jade</span></h1>
+      <p class="hero-sub">quotes &middot; notes &middot; learnings &middot; 金句与感悟</p>
+      <div class="hero-shimmer-wrap" aria-hidden="true">
+        <div class="hero-line"></div>
+      </div>
+    </header>
+
+    <!-- TAB BAR -->
+    <div class="tab-bar" role="tablist" aria-label="Content sections">
+      <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="themes"   onclick="switchTab('themes',this)">themes first</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="loyalty"  onclick="switchTab('loyalty',this)">the loyalty problem</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="episodes" onclick="switchTab('episodes',this)">per episode</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="quotes"   onclick="switchTab('quotes',this)">all quotes</button>
+    </div>
+
+    <!-- ══════════ THEMES SECTION ══════════ -->
+    <section id="themes" class="section active" role="tabpanel" aria-labelledby="tab-themes">
+
+      <article class="glass-card">
+        <div class="card-eyebrow">theme 01 · identity</div>
+        <h2 class="card-title">jade isn't born, it's found in the rough</h2>
+        <p class="card-body">The whole title is a metaphor. 玉 (jade) in Chinese culture = virtue, moral worth, inner character. Fan Changyu literally has the character 玉 in her name — she is the jade. But nobody sees it at first because she's a butcher's daughter. The show's argument: dignity isn't assigned by birth, it's revealed by how you live.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「感谢你们有眼不识金镶玉。」</div>
+          <div class="q-en">"Thank you for failing to recognize gold inlaid with jade."</div>
+          <div class="q-attr">— Xie Zheng / Yan Zheng</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:6px;">Being rejected or overlooked by the wrong people isn't failure — it's freedom. The people who can't see your worth just saved you from giving them your time.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow">theme 02 · loyalty vs. justice</div>
+        <h2 class="card-title">what happens when the throne betrays the people who died for it</h2>
+        <p class="card-body">The three military families — Xie (谢), Wei (魏祁林's original family), and the Qi imperial house — were all bound together by loyalty to the crown. But the late emperor Qi Yi used that loyalty against them, engineering the Jinzhou massacre to eliminate his own son, Crown Prince Chengde. Three families' fates destroyed — for an emperor's paranoia. Loyalty to a corrupt ruler isn't virtue. It's complicity.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「先帝要稳坐龙椅，李家要掌控朝堂，归根到底，他们都从未将最容易遭受战火牵连的百姓，和为国征战的将士们，放在心上。」</div>
+          <div class="q-en">"The late emperor wanted to secure his throne, the Li clan wanted to control the court — in the end, neither of them ever truly thought about the civilians caught in the crossfire, or the soldiers who bled for this country."</div>
+          <div class="q-attr">— narrative analysis (Zhihu, 逐玉 thread)</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:6px;">Loyalty without discernment is just obedience. The real question isn't "are you loyal?" — it's "loyal to what, and at whose expense?"</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow">theme 03 · love</div>
+        <h2 class="card-title">love in a market world</h2>
+        <p class="card-body">Changyu's declarations of love are never poetic — they're practical. She offers to slaughter pigs to support him. She says she'll "raise him." This is the show's radical move: making a woman's love loud, direct, and completely unashamed. Meanwhile Xie Zheng — the decorated war general — is the one undone by her.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「你若留下，我杀猪养你啊。」</div>
+          <div class="q-en">"If you stay, I'll slaughter pigs and support you."</div>
+          <div class="q-attr">— Fan Changyu</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「我算尽天下棋局，却算漏了自己的缘分。」</div>
+          <div class="q-en">"I've calculated every game under heaven — but I forgot to account for my own fate."</div>
+          <div class="q-attr">— Xie Zheng</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:6px;">The smartest person in the room can still be blindsided by feeling something real. Strategy doesn't inoculate you against love — it just makes you slower to admit it.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow">theme 04 · power &amp; grief</div>
+        <h2 class="card-title">the villain who was also a victim</h2>
+        <p class="card-body">Wei Yan (魏严) is the prime minister and apparent antagonist. But the finale reveals: he was manipulated by the late emperor through the woman he loved. He took the blame for the Jinzhou disaster he didn't fully cause. He spent 17 years as a power-hungry chancellor because grief and guilt curdled inside him. He's not excused — but he's explained. The real monster is the dead emperor no one can punish anymore.</p>
+        <span class="tag tag-theme">theme</span>
+        <p class="card-body" style="margin-top:6px;">Power without accountability doesn't just corrupt the people who hold it — it corrupts the next generation who inherit the fallout. Qi Sheng became a puppet emperor. Qi Min became a tortured avenger. The late emperor's paranoia became everyone else's tragedy.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow">theme 05 · survival</div>
+        <h2 class="card-title">just try to stay alive, one slap at a time</h2>
+        <p class="card-body">Fan Changyu's ethos isn't heroism — it's durability. She doesn't dream of glory; she dreams of 100 pigs. But her commitment to practical survival is what makes her actually dangerous in war. She's not fighting for ideology — she's fighting for the people she can name.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「世间万物，皆有其价。唯独真心，千金难换。」</div>
+          <div class="q-en">"Everything in this world has a price. Only sincerity cannot be bought for a thousand gold."</div>
+          <div class="q-attr">— drama dialogue</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「这辈子做个好猪，下辈子做个好人！」</div>
+          <div class="q-en">"In this life, be a good pig. In the next, be a good person!"</div>
+          <div class="q-attr">— Fan Changyu</div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ══════════ LOYALTY SECTION ══════════ -->
+    <section id="loyalty" class="section" role="tabpanel" aria-labelledby="tab-loyalty">
+
+      <article class="glass-card" style="text-align:center; padding: 1.75rem;">
+        <div class="card-eyebrow-gold">the core wound</div>
+        <h2 class="card-title" style="font-size:22px;">三族皆忠，皆被辜负</h2>
+        <p class="card-body" style="margin-bottom:0;">Three families. All loyal to the crown. All betrayed by it. This is the central injustice the whole 40 episodes slowly unbury.</p>
+      </article>
+
+      <div class="grid-2">
+        <div class="loyalty-glass">
+          <div class="loy-family">谢家 — the Xie family</div>
+          <p class="loy-desc">Marquis Wu'an Xie Linshan was the military backbone of Great Yin. His reward? Framed for treason, slaughtered. His wife took her own life. His five-year-old son (Xie Zheng) was the only survivor, raised by the very uncle who may have helped engineer the cover-up.</p>
+          <div class="loy-verdict">loyal to country → killed by the emperor who sent them there</div>
+        </div>
+        <div class="loyalty-glass">
+          <div class="loy-family">魏祁林 — Wei Qilin's line</div>
+          <p class="loy-desc">Fan Changyu's father was originally Wei Qilin — a Wei family warrior, then a general under Xie Linshan. He was scapegoated for the Jinzhou disaster and had to change his name, live in hiding as a butcher in a small town, and eventually die with the secret locked in his chopping knife.</p>
+          <div class="loy-verdict">loyal to his lord → spent 17 years hiding from the people his lord served</div>
+        </div>
+      </div>
+
+      <div class="loyalty-glass" style="margin-bottom:1rem;">
+        <div class="loy-family">齐家 / Crown Prince Chengde — the imperial casualty</div>
+        <p class="loy-desc">Crown Prince Chengde was loyal to the kingdom — popular, militarily capable, beloved by the soldiers. His own father (Emperor Qi Yi) feared that popularity. So the emperor engineered the abandonment of the Jinzhou garrison while the prince was visiting the front — killing his own heir to protect his throne. The Xie and Wei families were just collateral damage to a royal patricide.</p>
+        <div class="loy-verdict">loyal to his father's empire → killed by his father</div>
+      </div>
+
+      <div class="quote-glass" style="margin-bottom:1rem;">
+        <div class="q-cn">「那时的谢征，化名言正，入赘樊家，李怀安认出了谢征，却没有揭穿他的身份。」</div>
+        <div class="q-en">"At that time, Xie Zheng — disguised as Yan Zheng — had married into the Fan family. Li Huai'an recognized him, but chose not to expose him."</div>
+        <div class="q-attr">— Zhihu analysis of the Li family thread</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <article class="glass-card">
+        <div class="card-eyebrow-gold">the learning</div>
+        <h2 class="card-title">loyalty to a system ≠ loyalty to what's right</h2>
+        <p class="card-body">All three families were loyal — and all three were destroyed by the institution they served. The drama isn't saying loyalty is bad. It's saying blind loyalty to a corrupt ruler is indistinguishable from complicity. The people who survived and found meaning were the ones who eventually redirected their loyalty: to each other, to justice, to the truth — not to the throne.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「只要我活着，你就别想替旁人生儿育女。」</div>
+          <div class="q-en">"As long as I live, don't even think about having children with someone else."</div>
+          <div class="q-attr">— Xie Zheng (intense loyalty redirected: to her, not to the crown)</div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ══════════ EPISODES SECTION ══════════ -->
+    <section id="episodes" class="section" role="tabpanel" aria-labelledby="tab-episodes">
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 1–2</span>
+          <span class="ep-title-text">the snow and the soldier</span>
+        </div>
+        <p class="card-body">Changyu finds a dying man in a snowstorm — a stranger who calls himself Yan Zheng. She doesn't know he's the Marquis Wu'an, the most feared general in Great Yin. She takes him in because she recognizes grief. This is the show's thesis: people who've lost something recognize it in others, even when disguised.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「他是我在雪地里捡到的一块上好羊脂白玉，美、润，也值钱，但他不属于我，迟早是要还的。」</div>
+          <div class="q-en">"He's a piece of fine white jade I found in the snow — beautiful, smooth, and valuable. But he doesn't belong to me. Sooner or later, he'll have to be returned."</div>
+          <div class="q-attr">— Fan Changyu's inner monologue</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:5px;">She already knows the love is temporary — and loves anyway. That's not delusion. That's courage.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 3–5</span>
+          <span class="ep-title-text">the contract marriage</span>
+        </div>
+        <p class="card-body">They strike a deal: he pretends to be her husband to protect the family, she nurses him back to health. Classic fake-to-real setup, but the drama earns it because Changyu is completely clear-eyed the entire time. She negotiates the terms like a business arrangement — and that practicality is exactly what cracks him open.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「长玉，我娶你好不好？你不说话，我就当你答应了。」</div>
+          <div class="q-en">"Changyu, will you marry me? If you don't say anything, I'll take that as a yes."</div>
+          <div class="q-attr">— Xie Zheng / Yan Zheng</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「你今天吃陈皮糖了吗？那你现在想吃吗？」</div>
+          <div class="q-en">"Did you eat any tangerine peel candy today? Do you want some now?"</div>
+          <div class="q-attr">— Xie Zheng (the iconic flirt line)</div>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 6–15</span>
+          <span class="ep-title-text">lin'an arc — the best episodes</span>
+        </div>
+        <p class="card-body">Everyone agrees: the Lin'an small-town arc is the show's peak. Slow build, warm market life, neighbors, pigs, case-solving, growing feelings — all while Xie Zheng hides who he is. The appeal isn't the romance alone, it's watching a war general discover what it feels like to be cared for as just a person. He's used to being feared. She just feeds him and argues with him.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「想要一家人整整齐齐，平平安安。」</div>
+          <div class="q-en">"I just want the family to be whole, and safe."</div>
+          <div class="q-attr">— Fan Changyu (her only dream, stated simply)</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:5px;">The most dangerous thing you can give someone who's only known duty and revenge is a glimpse of ordinary warmth. Xie Zheng was done from episode 8.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 16–25</span>
+          <span class="ep-title-text">war, separation, and identity reveal</span>
+        </div>
+        <p class="card-body">Xie Zheng is pulled back to his real identity. He's Marquis Wu'an again. The distance between them becomes class, title, rank. Changyu refuses to accept that — follows him to the battlefield and replaces him in a duel to protect his cover, killing the enemy general herself. The butcher's knife meets the battlefield.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「我不怕死，只怕我死了，没人护你。」</div>
+          <div class="q-en">"I'm not afraid of dying — I'm afraid that if I die, there'll be no one left to protect you."</div>
+          <div class="q-attr">— Fan Changyu</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「别躲我，我只有你。」</div>
+          <div class="q-en">"Don't avoid me. You are all I have."</div>
+          <div class="q-attr">— Xie Zheng (the line that broke the internet)</div>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 26–35</span>
+          <span class="ep-title-text">the truth about jinzhou / 锦州血案</span>
+        </div>
+        <p class="card-body">The Jinzhou massacre is slowly unpacked. The truth: the late emperor orchestrated the garrison's destruction to eliminate Crown Prince Chengde. The Xie family, Wei Qilin, the soldiers — all collateral damage. Changyu discovers she's Wei Qilin's granddaughter. Xie Zheng discovers his uncle Wei Yan isn't purely the villain. Everyone is downstream of one dead emperor's paranoia.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「先帝忌惮承德太子威望日盛，于是痛下杀手，设局利用魏严对淑妃戚容音的爱意，把他引回京城。」</div>
+          <div class="q-en">"The late emperor, threatened by Crown Prince Chengde's growing prestige, made his move — using Wei Yan's love for Consort Chi Rongyin as a trap to lure him back to the capital."</div>
+          <div class="q-attr">— plot summary (Tencent news, 逐玉 ep 40 recap)</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:5px;">The person you've been blaming for 17 years might also have been manipulated. That doesn't erase the damage — but it changes what justice actually looks like.</p>
+      </article>
+
+      <article class="glass-card">
+        <div class="ep-header">
+          <span class="ep-num-pill">ep 36–40</span>
+          <span class="ep-title-text">大结局 — the ending</span>
+        </div>
+        <p class="card-body">Changyu becomes General (怀化大将军). Xie Zheng becomes Prince Regent — briefly — then steps back. A child emperor (Bao'er / Yu Qi, who is actually Crown Prince Chengde's biological grandson) takes the throne. The puppet emperor Qi Sheng dies by poison — quietly, alone, unrecorded. The real winners are people who never wanted power. And Changyu, who wanted 100 pigs.</p>
+        <div class="quote-glass">
+          <div class="q-cn">「樊氏长玉，乃吾终身之侣，绝不相负，至死不渝。」</div>
+          <div class="q-en">"Fan Changyu — she is the companion of my lifetime. I will never betray her. Until death, unchanging."</div>
+          <div class="q-attr">— Xie Zheng (final vow)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「齐昇独坐空殿，手抖接杯，未发一言，无声毙命。」</div>
+          <div class="q-en">"Qi Sheng sat alone in the empty palace. Hands trembling, he accepted the cup — said nothing, died in silence."</div>
+          <div class="q-attr">— recap (360 Entertainment)</div>
+        </div>
+        <span class="tag tag-learn">learning</span>
+        <p class="card-body" style="margin-top:5px;">A puppet emperor who reigned 17 years — no son, no ally, no obituary. Power without agency is just a cage with a crown on it.</p>
+      </article>
+
+    </section>
+
+    <!-- ══════════ ALL QUOTES SECTION ══════════ -->
+    <section id="quotes" class="section" role="tabpanel" aria-labelledby="tab-quotes">
+
+      <article class="glass-card">
+        <div class="card-eyebrow-gold">love &amp; longing</div>
+        <div class="quote-glass">
+          <div class="q-cn">「可天下这么多女子里，我只心悦你一个啊。」</div>
+          <div class="q-en">"But out of all the women in this world — you are the only one I have feelings for."</div>
+          <div class="q-attr">— Xie Zheng (said while deboning fish for her)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「风雨如晦，鸡鸣不已。既见君子，云胡不喜。」</div>
+          <div class="q-en">"In dark and stormy weather, the rooster still crows. Now that I've seen you — how could I not be glad?"</div>
+          <div class="q-attr">— from Classic of Poetry / 诗经 (used as a love declaration)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「无论你以怎样的身份跟我在一起，都是堂堂正正的。」</div>
+          <div class="q-en">"Whatever identity you stand beside me with — it will always be with dignity."</div>
+          <div class="q-attr">— Xie Zheng</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「别躲我，我只有你。」</div>
+          <div class="q-en">"Don't avoid me. You are all I have."</div>
+          <div class="q-attr">— Xie Zheng</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「樊氏长玉，乃吾终身之侣，绝不相负，至死不渝。」</div>
+          <div class="q-en">"Fan Changyu — she is the companion of my lifetime. I will never betray her. Until death, unchanging."</div>
+          <div class="q-attr">— Xie Zheng (final vow)</div>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow-gold">survival &amp; pragmatism</div>
+        <div class="quote-glass">
+          <div class="q-cn">「给男人花钱，天打雷劈。」</div>
+          <div class="q-en">"Spending money on a man? May lightning strike you."</div>
+          <div class="q-attr">— Fan Changyu (early, before she loved him lol)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「强扭的瓜不甜，不用甜，解渴就行。」</div>
+          <div class="q-en">"A forced melon isn't sweet. It doesn't need to be sweet — it just needs to quench the thirst."</div>
+          <div class="q-attr">— drama dialogue (on arranged circumstances)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「要让他们疼，比受害之人还疼，才能正本清源。」</div>
+          <div class="q-en">"Make them hurt — more than the people they harmed — only then can justice be restored."</div>
+          <div class="q-attr">— Fan Changyu (on wrongdoers)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「世间万物，皆有其价。唯独真心，千金难换。」</div>
+          <div class="q-en">"Everything in this world has a price. Only sincerity cannot be bought for a thousand gold."</div>
+          <div class="q-attr">— drama dialogue</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「你若留下，我杀猪养你啊。」</div>
+          <div class="q-en">"If you stay, I'll slaughter pigs and support you."</div>
+          <div class="q-attr">— Fan Changyu</div>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="card-eyebrow-gold">politics &amp; fate</div>
+        <div class="quote-glass">
+          <div class="q-cn">「先帝要稳坐龙椅，李家要掌控朝堂，归根到底，他们都从未将最容易遭受战火牵连的百姓，和为国征战的将士们，放在心上。」</div>
+          <div class="q-en">"The late emperor wanted to secure his throne, the Li clan wanted to control the court — in the end, neither ever truly thought about the civilians caught in the crossfire, or the soldiers who bled for this country."</div>
+          <div class="q-attr">— Zhihu analysis</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「历经千帆才懂，世间所有繁华，终不及三餐四季、烟火寻常。」</div>
+          <div class="q-en">"After sailing a thousand ships, you finally understand — all the splendor in the world cannot compare to three meals a day, four seasons, and the ordinary smoke of daily life."</div>
+          <div class="q-attr">— drama dialogue (ep ~30+)</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「我算尽天下棋局，却算漏了自己的缘分。」</div>
+          <div class="q-en">"I've calculated every game under heaven — but I forgot to account for my own fate."</div>
+          <div class="q-attr">— Xie Zheng</div>
+        </div>
+        <div class="quote-glass">
+          <div class="q-cn">「感谢你们有眼不识金镶玉。」</div>
+          <div class="q-en">"Thank you for failing to recognize gold inlaid with jade."</div>
+          <div class="q-attr">— Xie Zheng / Yan Zheng</div>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────── -->
+  <footer role="contentinfo">
+    <div class="footer-line" aria-hidden="true"></div>
+    <p class="footer-text">逐玉 · quotes, notes &amp; learnings · 金句与感悟</p>
+  </footer>
+
+  <!-- ─── JAVASCRIPT ────────────────────────────────────────── -->
+  <script>
+    /* ── THEME ─────────────────────────────────────────────── */
+    (function initTheme() {
+      const saved = localStorage.getItem('poj-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      updateToggleAria(saved);
+    })();
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('poj-theme', next);
+      updateToggleAria(next);
+      respawnParticles();
+    }
+
+    function updateToggleAria(theme) {
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) toggle.setAttribute('aria-checked', theme === 'light' ? 'true' : 'false');
+    }
+
+    /* ── TAB SWITCHING ─────────────────────────────────────── */
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-btn').forEach(function(t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.section').forEach(function(s) {
+        s.classList.remove('active');
+      });
+      const target = document.getElementById(id);
+      if (target) target.classList.add('active');
+      if (btn) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+      }
+    }
+
+    function switchTabFromNav(id) {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const sectionOrder = ['themes', 'loyalty', 'episodes', 'quotes'];
+      const idx = sectionOrder.indexOf(id);
+      if (idx !== -1 && tabBtns[idx]) {
+        switchTab(id, tabBtns[idx]);
+      }
+      setTimeout(function() {
+        const el = document.querySelector('.tab-bar');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+
+    /* ── MOBILE NAV ────────────────────────────────────────── */
+    function toggleMobileNav() {
+      const nav    = document.getElementById('mobile-nav');
+      const burger = document.getElementById('hamburger');
+      const isOpen = nav.classList.contains('open');
+      if (isOpen) {
+        nav.classList.remove('open');
+        burger.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      } else {
+        nav.classList.add('open');
+        burger.classList.add('open');
+        burger.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function closeMobileNav() {
+      const nav    = document.getElementById('mobile-nav');
+      const burger = document.getElementById('hamburger');
+      nav.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+
+    /* ── PARTICLES ─────────────────────────────────────────── */
+    var particleTimers = [];
+
+    function getParticleColor() {
+      const theme = document.documentElement.getAttribute('data-theme');
+      const colors = theme === 'dark'
+        ? ['rgba(78,203,145,0.25)', 'rgba(201,168,76,0.2)', 'rgba(168,240,208,0.2)']
+        : ['rgba(15,74,48,0.18)', 'rgba(138,96,24,0.15)', 'rgba(26,107,69,0.15)'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function spawnParticle() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 3 + Math.random() * 5;
+      const left = Math.random() * 100;
+      const duration = 12 + Math.random() * 14;
+      const delay = Math.random() * 6;
+      p.style.cssText = [
+        'width:' + size + 'px',
+        'height:' + size + 'px',
+        'left:' + left + '%',
+        'bottom:0',
+        'background:' + getParticleColor(),
+        'animation-duration:' + duration + 's',
+        'animation-delay:' + delay + 's'
+      ].join(';');
+      canvas.appendChild(p);
+      var removeTimer = setTimeout(function() {
+        if (p.parentNode) p.parentNode.removeChild(p);
+      }, (duration + delay + 1) * 1000);
+      particleTimers.push(removeTimer);
+    }
+
+    function respawnParticles() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      canvas.querySelectorAll('.particle').forEach(function(p) { p.remove(); });
+      initParticles();
+    }
+
+    function initParticles() {
+      var count = window.innerWidth < 640 ? 10 : 18;
+      for (var i = 0; i < count; i++) {
+        (function(i) {
+          var t = setTimeout(function() { spawnParticle(); }, i * 300);
+          particleTimers.push(t);
+        })(i);
+      }
+      var interval = setInterval(function() {
+        if (document.querySelectorAll('.particle').length < (window.innerWidth < 640 ? 10 : 18)) {
+          spawnParticle();
+        }
+      }, 3000);
+      particleTimers.push(interval);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initParticles();
+    });
+
+    /* ── CLOSE MOBILE NAV ON OUTSIDE CLICK ─────────────────── */
+    document.addEventListener('click', function(e) {
+      const nav    = document.getElementById('mobile-nav');
+      const burger = document.getElementById('hamburger');
+      if (!nav || !burger) return;
+      if (!nav.contains(e.target) && !burger.contains(e.target)) {
+        closeMobileNav();
+      }
+    });
+  </script>
+</body>
+</html>
